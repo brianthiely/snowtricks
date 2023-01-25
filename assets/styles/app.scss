@@ -1,1 +1,65 @@
 @import "~bootstrap/scss/bootstrap";
+
+.navbar, h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+  font-family: "Cabin","Helvetica Neue",Helvetica,Arial,sans-serif;
+  margin-bottom: 0;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+#cover {
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.3)), url(../../assets/img/homepage/cover.jpg) no-repeat center center;
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-link {
+  color: #87CEFA;
+}
+
+.nav-link:hover {
+  background-image: linear-gradient(to right, #ffffff, #87CEFA); /* ce dégradé va de blanc à bleu clair */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand {
+  background-image: linear-gradient(to right, #ffffff, #87CEFA); /* ce dégradé va de blanc à bleu clair */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+
+.card {
+  border-radius: 1rem; /* bordures arrondies */
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3); /* ombre interne */
+  font-family: "Cabin", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-decoration: none; /* retire le soulignement du lien */
+  text-transform: uppercase;
+  transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: scale(1.05); /* augmentation de la taille de 5% */
+}
+
+.card-img-top {
+  border-top-left-radius: 1rem; /* bordures arrondies */
+  border-top-right-radius: 1rem; /* bordures arrondies */
+}
+
+.card-text {
+  text-align: center; /* pour centrer le texte */
+}
+
+.fa-trash:hover {
+  color: red;
+}
+
+.fa-pencil:hover {
+  color: green;
+}
