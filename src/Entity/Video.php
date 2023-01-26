@@ -2,23 +2,27 @@
 
 namespace App\Entity;
 
-use App\Repository\PictureRepository;
+use App\Repository\VideoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PictureRepository::class)]
-class Picture
+#[ORM\Entity(repositoryClass: VideoRepository::class)]
+class Video
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 355)]
-    private ?string $url = null;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $embed_code = null;
 
-    #[ORM\ManyToMany(targetEntity: Trick::class, mappedBy: 'pictures')]
+    #[ORM\Column(length: 255)]
+    private ?string $plateform = null;
+
+    #[ORM\ManyToMany(targetEntity: Trick::class, mappedBy: 'videos')]
     private Collection $tricks;
 
     public function __construct()
@@ -31,14 +35,26 @@ class Picture
         return $this->id;
     }
 
-    public function getUrl(): ?string
+    public function getEmbedCode(): ?string
     {
-        return $this->url;
+        return $this->embed_code;
     }
 
-    public function setUrl(string $url): self
+    public function setEmbedCode(string $embed_code): self
     {
-        $this->url = $url;
+        $this->embed_code = $embed_code;
+
+        return $this;
+    }
+
+    public function getPlateform(): ?string
+    {
+        return $this->plateform;
+    }
+
+    public function setPlateform(string $plateform): self
+    {
+        $this->plateform = $plateform;
 
         return $this;
     }
@@ -55,7 +71,7 @@ class Picture
     {
         if (!$this->tricks->contains($trick)) {
             $this->tricks->add($trick);
-            $trick->addPicture($this);
+            $trick->addVideo($this);
         }
 
         return $this;
@@ -64,7 +80,7 @@ class Picture
     public function removeTrick(Trick $trick): self
     {
         if ($this->tricks->removeElement($trick)) {
-            $trick->removePicture($this);
+            $trick->removeVideo($this);
         }
 
         return $this;

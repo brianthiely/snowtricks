@@ -21,14 +21,15 @@ class TrickController extends AbstractController
 //        return $this->render('trick/category.html.twig', compact('slug', 'category'));
 //    }
 
-//    public function show($slug, TrickRepository $trickRepository): Response
-//    {
-//        $trick = $trickRepository->findOneBy(['slug' => $slug]);
-//
-//        if(!$trick){
-//            throw $this->createNotFoundException('Trick not found');
-//        }
-//
-//        return $this->render('trick/show.html.twig', compact('slug', 'trick'));
-//    }
+    #[Route('/category/{trick_category}/{slug}', name: 'trick-show')]
+    public function show($slug, TrickRepository $trickRepository): Response
+    {
+        $trick = $trickRepository->findOneBy(['slug' => $slug]);
+
+        if(!$trick){
+            throw $this->createNotFoundException('Trick not found');
+        }
+
+        return $this->render('trick/show.html.twig', compact('slug', 'trick'));
+    }
 }
