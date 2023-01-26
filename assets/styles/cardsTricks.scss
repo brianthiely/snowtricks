@@ -1,0 +1,36 @@
+@import "~bootstrap/scss/bootstrap";
+
+#cardAnime {
+  border-radius: 1rem; /* bordures arrondies */
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3); /* ombre interne */
+  font-family: "Cabin", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-decoration: none; /* retire le soulignement du lien */
+  text-transform: uppercase;
+  transition: all 0.2s ease-in-out;
+}
+
+#cardAnime:hover {
+  transform: scale(1.05); /* augmentation de la taille de 5% */
+}
+
+.border-radius {
+  border-top-left-radius: 1rem; /* bordures arrondies */
+  border-top-right-radius: 1rem; /* bordures arrondies */
+}
+
+.fa-trash:hover {
+  color: red;
+}
+
+.fa-pencil:hover {
+  color: green;
+}
+
+.card-trick{
+  height: 115px;
+  width: 250px;
+}
+
+.card-text{
+  font-family: "Lora", sans-serif;
+}

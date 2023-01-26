@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <main>
+        <section>
+            <div id="cover" class="text-white text-center px-3 d-flex flex-column">
+                <h1> <span class="brand">Snowtricks</span>, la communauté des riders.</h1>
+                <p class="lead text-center">Rejoignez la communauté Snowtricks pour partager et découvrir de nouveaux
+                    tricks de snowboard avec d'autres passionnés</p>
+            </div>
+        </section>
+
+        <section id="tricks">
+            <div class="album py-5 bg-light">
+                <div class="col d-flex flex-wrap justify-content-evenly">
+                    {% for trick in tricks %}
+                        <div id="cardAnime" class="card col-sm-6 col-md-2 col-lg-3 m-1 mt-4">
+                            <a href="{{ path('trick-show', {
+                                'trick_category': trick.category,
+                                'slug': trick.slug }) }}"
+                               class="h-75 object-fit-cover img-fluid">
+                                <img src="{{ trick.pictures.first.url }}" class="card-img-top border-radius h-100" alt="{{ trick
+                                .name }}">
+                            </a>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="card-text m-0">{{ trick.name }}</p>
+                                    <div class="btn-group">
+                                        <a href="#"> <i class="fa fa-pencil fa-sm"></i></a>
+                                        <a href="#"><i class="fa fa-trash fa-sm ms-2"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}
