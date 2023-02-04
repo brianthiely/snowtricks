@@ -19,7 +19,10 @@
     </head>
     <body>
     {% include "shared/_navbar.html.twig" %}
+
+    <div class="container">
         {% block body %}{% endblock %}
+    </div>
     {% include "shared/_footer.html.twig" %}
     </body>
 </html>

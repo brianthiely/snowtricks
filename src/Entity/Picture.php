@@ -2,28 +2,72 @@
 
 namespace App\Entity;
 
-use App\Repository\PictureRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PictureRepository::class)]
+/**
+ * Picture
+ *
+ * @ORM\Table(name="picture", indexes={@ORM\Index(name="fk_picture_user1_idx", columns={"user_id"})})
+ * @ORM\Entity
+ */
 class Picture
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
 
-    #[ORM\Column(length: 355)]
-    private ?string $url = null;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="url", type="string", length=255, nullable=false)
+     */
+    private $url;
 
-    #[ORM\ManyToMany(targetEntity: Trick::class, mappedBy: 'pictures')]
-    private Collection $tricks;
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     */
+    private $createdAt = 'CURRENT_TIMESTAMP';
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
+     */
+    private $updatedAt = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * })
+     */
+    private $user;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Trick", mappedBy="picture")
+     */
+    private $trick = array();
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
-        $this->tricks = new ArrayCollection();
+        $this->trick = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getId(): ?int
@@ -43,18 +87,54 @@ class Picture
         return $this;
     }
 
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Trick>
      */
-    public function getTricks(): Collection
+    public function getTrick(): Collection
     {
-        return $this->tricks;
+        return $this->trick;
     }
 
     public function addTrick(Trick $trick): self
     {
-        if (!$this->tricks->contains($trick)) {
-            $this->tricks->add($trick);
+        if (!$this->trick->contains($trick)) {
+            $this->trick->add($trick);
             $trick->addPicture($this);
         }
 
@@ -63,10 +143,11 @@ class Picture
 
     public function removeTrick(Trick $trick): self
     {
-        if ($this->tricks->removeElement($trick)) {
+        if ($this->trick->removeElement($trick)) {
             $trick->removePicture($this);
         }
 
         return $this;
     }
+
 }

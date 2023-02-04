@@ -19,7 +19,7 @@
         <section id="tricks">
             <div class="album py-5 bg-light">
                 <div class="d-flex justify-content-end mx-5">
-                    <a href="" class="btn btn-primary">Ajouter un trick</a>
+                    <a href="{{ path('trick-create') }}" class="btn btn-primary">Ajouter un trick</a>
                 </div>
                 <div class="col d-flex flex-wrap justify-content-evenly tricks">
                     {% for trick in tricks %}
