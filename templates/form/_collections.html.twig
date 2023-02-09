@@ -1,0 +1,34 @@
+
+<div id="pictures" class="row" data-prototype="{{ include('form/_picture.html.twig', {form:
+    formView.pictures.vars.prototype}) | e('html_attr') }}"
+     data-index="{{ formView.pictures|length > 0 ? formView.pictures|last.vars.url + 1 : 0 }}">
+    {% for picture in formView.pictures %}
+        <div class="col-12">
+            {{ include('form/_picture.html.twig', {form: picture}) }}
+        </div>
+    {% endfor %}
+</div>
+
+{{ form_errors(formView.pictures) }}
+
+<div type="button" class="btn btn-primary btn-new mb-3" data-collection="#pictures">
+    <i class="fas fa-plus"></i>
+    Ajouter une image
+</div>
+
+<div id="videos" class="row" data-prototype="{{ include('form/_video.html.twig', {form:
+    formView.videos.vars.prototype}) | e('html_attr') }}" data-index="{{ formView.videos|length > 0 ?
+formView.videos|last.vars.embed_code + 1 : 0 }}">
+    {% for video in formView.videos %}
+        <div class="col-12">
+            {{ include('form/_video.html.twig', {form: video}) }}
+        </div>
+    {% endfor %}
+</div>
+
+{{ form_errors(formView.videos) }}
+
+<div type="button" class="btn btn-primary btn-new" data-collection="#videos">
+    <i class="fas fa-plus"></i>
+    Ajouter une video
+</div>

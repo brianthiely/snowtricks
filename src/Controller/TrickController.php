@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Picture;
 use App\Entity\Trick;
+use App\Form\TrickType;
 use App\Repository\TrickRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,69 +34,35 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/create', name: 'trick-create')]
-    public function create(FormFactoryInterface $factory, Request $request,
+    public function create(Request $request,
                            SluggerInterface $slugger, EntityManagerInterface
                            $em):
     Response
     {
-        $builder = $factory->createBuilder(FormType::class, null, [
-            'data_class' => Trick::class
-        ]);
-
-        $builder->add('name', TextType::class, [
-            'label' => 'Nom du trick',
-            'attr' => [
-                'placeholder' => 'Indiquer le noms du trick'
-            ]
-        ])
-                ->add('description', TextareaType::class, [
-                    'label' => 'Description du trick',
-                    'attr' => [
-                        'placeholder' => 'Expliquer le trick'
-                    ]
-                ])
-                ->add('pictures', CollectionType::class, [
-                    'label' => 'Image du trick',
-                    'attr' => [
-                        'placeholder' => 'Indiquer l\'url de l\'image'
-                    ],
-                    'prototype' => true,
-                    'allow_add' => true,
-                    'allow_delete' => true,
-                    'by_reference' => false,
-                ])
-                ->add('videos', CollectionType::class, [
-                    'label' => 'Vidéo du trick',
-                    'attr' => [
-                        'placeholder' => 'Indiquer l\'embed code de la vidéo'
-                    ],
-                    'prototype' => true,
-                    'allow_add' => true,
-                    'allow_delete' => true,
-                    'by_reference' => false,
-                ])
-                ->add('category', ChoiceType::class, [
-                    'label' => 'Catégorie',
-                    'placeholder' => '-- Choisir une catégorie --',
-                    'choices' => [
-                        'Grabs' => 'Grabs',
-                        'Rotations' => 'Rotations',
-                        'Flips' => 'Flips',
-                        'Slides' => 'Slides',
-                        'One foot tricks' => 'One foot tricks',
-                        'Old school' => 'Old school',
-                        'Other' => 'Other'
-                    ]
-                ]);
-
-
-        $form = $builder->getForm();
+        $form = $this->createForm(TrickType::class);
 
         $form->handleRequest($request);
 
         if($form->isSubmitted()) {
+            /** @var Trick $trick */
             $trick = $form->getData();
             $trick->setSlug(strtolower($slugger->slug($trick->getName())));
+
+//            $trick->setCreatedAt(new \DateTimeImmutable());
+//            foreach ($trick->getPictures() as $picture) {
+//                $picture->setCreatedAt(new \DateTimeImmutable());
+//            }
+//            foreach ($trick->getVideos() as $video) {
+//                $video->setCreatedAt(new \DateTimeImmutable());
+//            }
+//            $trick->setUpdatedAt(new \DateTimeImmutable());
+//            foreach ($trick->getPictures() as $picture) {
+//                $picture->setUpdatedAt(new \DateTimeImmutable());
+//            }
+//            foreach ($trick->getVideos() as $video) {
+//                $video->setUpdatedAt(new \DateTimeImmutable());
+//            }
+
 
             $em->persist($trick);
             $em->flush();
@@ -105,7 +73,4 @@ class TrickController extends AbstractController
 
         return $this->render('trick/create.html.twig', compact('formView'));
     }
-
-
-
 }

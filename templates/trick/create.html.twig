@@ -1,33 +1,24 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
-    {{ form_start(formView) }}
-
-    {{ form_errors(formView) }}
-
-    <div class="row">
-        <div class="col">
-            {{ form_row(formView.name) }}
-            {{ form_row(formView.description) }}
+    <div class="container">
+        {{ form_start(formView) }}
+        {{ form_errors(formView) }}
+        <div class="row">
+            <div class="col-12 col-md-6">
+                {{ form_row(formView.name) }}
+                {{ form_row(formView.description) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_row(formView.category) }}
+             {% include 'form/_collections.html.twig' %}
+            </div>
         </div>
-        <div class="col">
-            {{ form_row(formView.videos) }}
-            {{ form_row(formView.pictures) }}
-            {{ form_row(formView.category) }}
-        </div>
+        <button type="submit" class="btn btn-primary mt-3">
+            <i class="fas fa-save">
+                Sauvegarder
+            </i>
+        </button>
+        {{ form_end(formView) }}
     </div>
-
-
-
-
-    <button type="submit" class="btn btn-primary">
-        <i class="fas fa-save">
-            Sauvegarder
-        </i>
-    </button>
-
-    {{ form_end(formView) }}
-
 {% endblock %}
-

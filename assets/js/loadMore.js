@@ -1,22 +1,14 @@
-const loadmore = document.querySelector('.load-more');
-
-let currentItems = 15;
-loadmore.addEventListener('click', (e) => {
-    const elementList = [...document.querySelectorAll('.tricks div')];
-    e.target.classList.add('show-loader');
-
-    for (let i = currentItems; i < currentItems + 15; i++) {
-        setTimeout(function () {
-            e.target.classList.remove('show-loader');
-            if (elementList[i]) {
-                elementList[i].style.display = 'flex';
-            }
-        }, 3000);
-    }
-    currentItems += 15;
-
-    // hide load more button if all items are displayed
-    if (currentItems >= elementList.length) {
-        e.target.classList.add('loaded');
-    }
-});
+// document.getElementById('see-more').addEventListener('click', function () {
+//     let offset = {{ tricks|length }};
+//
+//     fetch('{{ path('homepage', {offset: offset}) }}')
+//         .then(response => response.text())
+//         .then(function (html) {
+//             let div = document.createElement('div');
+//             div.innerHTML = html;
+//             let newTricks = div.querySelectorAll('.trick');
+//             for (let i = 0; i < newTricks.length; i++) {
+//                 document.querySelector('.tricks-container').appendChild(newTricks[i]);
+//             }
+//         });
+// });

@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
     <main>
         <section>
@@ -21,15 +20,18 @@
                 <div class="d-flex justify-content-end mx-5">
                     <a href="{{ path('trick-create') }}" class="btn btn-primary">Ajouter un trick</a>
                 </div>
-                <div class="col d-flex flex-wrap justify-content-evenly tricks">
+                <div id="tricks-container" class="col d-flex flex-wrap justify-content-evenly tricks">
                     {% for trick in tricks %}
                         <div id="cardAnime" class="card col-sm-6 col-md-2 col-lg-3 m-1 mt-4">
                             <a href="{{ path('trick-show', {
                                 'trick_category': trick.category,
                                 'slug': trick.slug }) }}"
                                class="h-75 object-fit-cover img-fluid text-decoration-none degrade">
-                                <img src="{{ trick.pictures.first.url }}" class="card-img-top border-radius h-100" alt="{{ trick
-                                .name }}">
+                                <img src="{% if trick.pictures.first %}
+                                    {{ trick.pictures.first.url }}
+                                        {% else %}
+                                            {{ "https://i.pinimg.com/564x/ca/bf/ae/cabfae4ecadb566a850c49fc33fade69.jpg" }}
+                                        {% endif %}" class="card-img-top border-radius h-100" alt="{{ trick.name }}">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center">
                                          <p class="card-text m-0">{{ trick.name }}</p>
@@ -42,6 +44,12 @@
                             </a>
                         </div>
                     {% endfor %}
+
+                </div>
+                <div class="d-flex justify-content-center mt-5">
+                    <button type="button" id="see-more" class="btn btn-primary">
+                        Voir plus
+                    </button>
                 </div>
             </div>
         </section>

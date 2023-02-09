@@ -2,73 +2,30 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
+use App\Repository\PictureRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Picture
- *
- * @ORM\Table(name="picture", indexes={@ORM\Index(name="fk_picture_user1_idx", columns={"user_id"})})
- * @ORM\Entity
- */
+#[ORM\Entity(repositoryClass: PictureRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Picture
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="url", type="string", length=255, nullable=false)
-     */
-    private $url;
+    #[ORM\Column(length: 255)]
+    private ?string $url = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
-     */
-    private $createdAt = 'CURRENT_TIMESTAMP';
+    #[ORM\Column]
+    private ?DateTimeImmutable $created_at = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
-     */
-    private $updatedAt = 'CURRENT_TIMESTAMP';
+    #[ORM\Column]
+    private ?DateTimeImmutable $updated_at = null;
 
-    /**
-     * @var \User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     * })
-     */
-    private $user;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Trick", mappedBy="picture")
-     */
-    private $trick = array();
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->trick = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+    #[ORM\ManyToOne(cascade: ['persist', 'remove'], inversedBy: 'pictures')]
+    private ?Trick $trick = null;
 
     public function getId(): ?int
     {
@@ -87,67 +44,43 @@ class Picture
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    /**
+     * @return DateTimeImmutable|null
+     */
+    public function getCreatedAt(): ?DateTimeImmutable
     {
-        return $this->createdAt;
+        return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    #[ORM\PrePersist]
+    public function setCreatedAt(): void
     {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
+        $this->created_at = new DateTimeImmutable();
     }
 
     /**
-     * @return Collection<int, Trick>
+     * @return DateTimeImmutable|null
      */
-    public function getTrick(): Collection
+    public function getUpdatedAt(): ?DateTimeImmutable
+    {
+        return $this->updated_at;
+    }
+
+    #[ORM\PrePersist]
+    public function setUpdatedAt(): void
+    {
+        $this->updated_at = new DateTimeImmutable();
+    }
+
+    public function getTrick(): ?Trick
     {
         return $this->trick;
     }
 
-    public function addTrick(Trick $trick): self
+    public function setTrick(?Trick $trick): self
     {
-        if (!$this->trick->contains($trick)) {
-            $this->trick->add($trick);
-            $trick->addPicture($this);
-        }
+        $this->trick = $trick;
 
         return $this;
     }
-
-    public function removeTrick(Trick $trick): self
-    {
-        if ($this->trick->removeElement($trick)) {
-            $trick->removePicture($this);
-        }
-
-        return $this;
-    }
-
 }
