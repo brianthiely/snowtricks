@@ -3,12 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\VideoRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VideoRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Video
 {
     #[ORM\Id]
@@ -19,16 +18,14 @@ class Video
     #[ORM\Column(type: Types::TEXT)]
     private ?string $embed_code = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $plateform = null;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\ManyToMany(targetEntity: Trick::class, mappedBy: 'videos')]
-    private Collection $tricks;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updated_at = null;
 
-    public function __construct()
-    {
-        $this->tricks = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(cascade: ['persist', 'remove'], inversedBy: 'videos')]
+    private ?Trick $trick = null;
 
     public function getId(): ?int
     {
@@ -47,41 +44,41 @@ class Video
         return $this;
     }
 
-    public function getPlateform(): ?string
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->plateform;
+        return $this->created_at;
     }
 
-    public function setPlateform(string $plateform): self
+    #[ORM\PrePersist]
+    public function setCreatedAt(): self
     {
-        $this->plateform = $plateform;
+        $this->created_at = new \DateTimeImmutable();
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Trick>
-     */
-    public function getTricks(): Collection
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->tricks;
+        return $this->updated_at;
     }
 
-    public function addTrick(Trick $trick): self
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function setUpdatedAt(): self
     {
-        if (!$this->tricks->contains($trick)) {
-            $this->tricks->add($trick);
-            $trick->addVideo($this);
-        }
+        $this->updated_at = new \DateTimeImmutable();
 
         return $this;
     }
 
-    public function removeTrick(Trick $trick): self
+    public function getTrick(): ?Trick
     {
-        if ($this->tricks->removeElement($trick)) {
-            $trick->removeVideo($this);
-        }
+        return $this->trick;
+    }
+
+    public function setTrick(?Trick $trick): self
+    {
+        $this->trick = $trick;
 
         return $this;
     }

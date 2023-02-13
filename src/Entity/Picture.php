@@ -3,11 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\PictureRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PictureRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Picture
 {
     #[ORM\Id]
@@ -15,16 +15,17 @@ class Picture
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 355)]
+    #[ORM\Column(length: 512)]
     private ?string $url = null;
 
-    #[ORM\ManyToMany(targetEntity: Trick::class, mappedBy: 'pictures')]
-    private Collection $tricks;
+    #[ORM\Column]
+    private ?DateTimeImmutable $created_at = null;
 
-    public function __construct()
-    {
-        $this->tricks = new ArrayCollection();
-    }
+    #[ORM\Column]
+    private ?DateTimeImmutable $updated_at = null;
+
+    #[ORM\ManyToOne(cascade: ['persist', 'remove'], inversedBy: 'pictures')]
+    private ?Trick $trick = null;
 
     public function getId(): ?int
     {
@@ -44,28 +45,41 @@ class Picture
     }
 
     /**
-     * @return Collection<int, Trick>
+     * @return DateTimeImmutable|null
      */
-    public function getTricks(): Collection
+    public function getCreatedAt(): ?DateTimeImmutable
     {
-        return $this->tricks;
+        return $this->created_at;
     }
 
-    public function addTrick(Trick $trick): self
+    #[ORM\PrePersist]
+    public function setCreatedAt(): void
     {
-        if (!$this->tricks->contains($trick)) {
-            $this->tricks->add($trick);
-            $trick->addPicture($this);
-        }
-
-        return $this;
+        $this->created_at = new DateTimeImmutable();
     }
 
-    public function removeTrick(Trick $trick): self
+    /**
+     * @return DateTimeImmutable|null
+     */
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
-        if ($this->tricks->removeElement($trick)) {
-            $trick->removePicture($this);
-        }
+        return $this->updated_at;
+    }
+
+    #[ORM\PrePersist]
+    public function setUpdatedAt(): void
+    {
+        $this->updated_at = new DateTimeImmutable();
+    }
+
+    public function getTrick(): ?Trick
+    {
+        return $this->trick;
+    }
+
+    public function setTrick(?Trick $trick): self
+    {
+        $this->trick = $trick;
 
         return $this;
     }
