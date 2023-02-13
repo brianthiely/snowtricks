@@ -6,7 +6,7 @@
              center center;background-size: cover;">
     <h1> <span class="brand">{{ trick.name }}</span></h1>
     <div class="icon-container position-absolute" style="top:10px; right:10px;">
-        <a href="#"> <i class="fa fa-pencil fa-lg"></i></a>
+        <a href="{{ path('trick-edit', {'id': trick.id}) }}"> <i class="fa fa-pencil fa-lg"></i></a>
         <a href="#"><i class="fa fa-trash fa-lg ms-2"></i></a>
     </div>
 </div>

@@ -21,8 +21,13 @@ const newItem = (e) => {
 
 document
     .querySelectorAll('.btn-remove')
-    .forEach(btn => btn.addEventListener('click', (e) => e.currentTarget.closest(".col-6").remove()
-    ));
+    .forEach(btn => btn.addEventListener('click', (e) => {
+        console.log(e.currentTarget);
+        const parentElement = e.currentTarget.closest('.col-12.col-md-6');
+        if (parentElement) {
+            parentElement.remove();
+        }
+    }));
 
 document
     .querySelectorAll('.btn-new')
