@@ -30,7 +30,7 @@
                                 <img src="{% if trick.pictures.first %}
                                     {{ trick.pictures.first.url }}
                                         {% else %}
-                                            {{ "https://i.pinimg.com/564x/ca/bf/ae/cabfae4ecadb566a850c49fc33fade69.jpg" }}
+                                            {{ asset('img/trick/default.jpg') }}
                                         {% endif %}" class="card-img-top border-radius h-100" alt="{{ trick.name }}">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center">

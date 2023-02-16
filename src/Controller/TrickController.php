@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -27,7 +28,7 @@ class TrickController extends AbstractController
 
     #[Route('/trick/{id}/edit', name: 'trick-edit')]
     public function edit($id, TrickRepository $trickRepository , Request
-    $request,EntityManagerInterface $em, SluggerInterface $slugger): Response
+    $request,EntityManagerInterface $em): Response
     {
         $trick = $trickRepository->find($id);
 
@@ -35,10 +36,12 @@ class TrickController extends AbstractController
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted()) {
-            $trick->setSlug(strtolower($slugger->slug($trick->getName())));
+        if($form->isSubmitted() && $form->isValid()) {
             $em->flush();
-            dd($trick);
+
+            return $this->redirectToRoute('trick-show', ['trick_category' => $trick->getCategory()
+                ,'slug' =>
+                    $trick->getSlug()]);
         }
 
         $form = $form->createView();
@@ -46,22 +49,25 @@ class TrickController extends AbstractController
         return $this->render('trick/edit.html.twig', compact('form', 'trick'));
     }
 
+
     #[Route('/trick/create', name: 'trick-create')]
-    public function create(Request $request, SluggerInterface $slugger, EntityManagerInterface $em): Response
+    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger):
+    Response
     {
         $trick = new Trick();
         $form = $this->createForm(TrickType::class, $trick);
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted()) {
-            $trick->setSlug(strtolower($slugger->slug($trick->getName())));
+        if($form->isSubmitted() && $form->isValid()) {
+            $trick->setSlug(strtolower((string)$slugger->slug($trick->getName())));
             $em->persist($trick);
             $em->flush();
-        }
 
+            return $this->redirectToRoute('trick-show', ['trick_category' => $trick->getCategory()
+                ,'slug' =>
+                    $trick->getSlug()]);
+        }
         return $this->render('trick/create.html.twig', compact('form'));
     }
-
-
 }

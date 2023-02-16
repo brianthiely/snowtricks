@@ -1,7 +1,7 @@
 <div id="coverTrick" class="text-white text-center px-3 d-flex flex-column"
      style="background:
              linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.3)), url({% if trick.pictures|length > 0
-     %}{{ trick.pictures.first.url }}{% else %}{{ "https://i.pinimg.com/564x/ca/bf/ae/cabfae4ecadb566a850c49fc33fade69.jpg" }}{% endif %})
+     %}{{ trick.pictures.first.url }}{% else %}{{ asset('img/trick/default.jpg') }}{% endif %})
              no-repeat
              center center;background-size: cover;">
     <h1> <span class="brand">{{ trick.name }}</span></h1>
