@@ -49,7 +49,6 @@ class Trick
     private Collection $videos;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Assert\Unique(message: 'Ce slug existe déjà', fields: ['slug'])]
     private ?string $slug = null;
 
 

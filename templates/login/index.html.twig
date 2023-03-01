@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+    <div class="d-flex align-items-center h-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                    <div class="card my-5">
+                        <div class="card-body text-center">
+                            <h5 class="card-title text-center">Connexion</h5>
+                            {% if error %}
+                                <div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                            {% endif %}
+                            <form action="{{ path('app_login') }}" method="post">
+                                <div class="form-group">
+                                    <label for="username">Username :</label>
+                                    <input class="form-control" type="text" id="username" name="_username" value="{{ lastUsername }}" aria-describedby="usernameHelp" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Mot de passe :</label>
+                                    <input class="form-control" type="password" id="password" name="_password" aria-describedby="passwordHelp" required>
+                                </div>
+                                <button class="btn btn-primary btn-block mt-2" type="submit">Connexion <i class="fas
+                                fa-sign-in-alt"></i></button><br>
+                                <a href="{{ path('app_forgot_password') }}" class="btn btn-link">Mot de passe oublié ?</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -27,7 +27,8 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/{id}/edit', name: 'trick-edit')]
-    public function edit($id, TrickRepository $trickRepository , Request
+    public function edit($id, TrickRepository $trickRepository,
+                         SluggerInterface $slugger ,Request
     $request,EntityManagerInterface $em): Response
     {
         $trick = $trickRepository->find($id);
@@ -37,6 +38,9 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
+            if($trick->getSlug() !== $form->get('name')->getData()){
+                $trick->setSlug(strtolower((string)$slugger->slug($trick->getName())));
+            }
             $em->flush();
 
             return $this->redirectToRoute('trick-show', ['trick_category' => $trick->getCategory()
@@ -51,7 +55,9 @@ class TrickController extends AbstractController
 
 
     #[Route('/trick/create', name: 'trick-create')]
-    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger):
+    public function create(Request $request, TrickRepository $trickRepository,
+                           EntityManagerInterface $em,
+                           SluggerInterface $slugger):
     Response
     {
         $trick = new Trick();
@@ -60,6 +66,12 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
+
+            if($trickRepository->findOneBy(['name' => $trick->getName()])){
+                #TODO: flash message
+                $this->addFlash('danger', 'Ce trick existe déjà');
+                return $this->render('trick/create.html.twig', compact('form'));
+            }
             $trick->setSlug(strtolower((string)$slugger->slug($trick->getName())));
             $em->persist($trick);
             $em->flush();
@@ -69,5 +81,21 @@ class TrickController extends AbstractController
                     $trick->getSlug()]);
         }
         return $this->render('trick/create.html.twig', compact('form'));
+    }
+
+
+    #[Route('/trick/{id}/delete', name: 'trick-delete')]
+    public function delete($id, TrickRepository $trickRepository, EntityManagerInterface $em): Response
+    {
+        $trick = $trickRepository->find($id);
+
+        if(!$trick){
+            //TODO: flash message
+        }
+
+        $em->remove($trick);
+        $em->flush();
+
+        return $this->redirectToRoute('homepage');
     }
 }
