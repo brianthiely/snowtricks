@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container mt-5">
+        <div class="col">
+            <div class="card shadow-sm">
+                {% include 'trick/_card.html.twig' %}
+                <div class="justify-content-center d-flex">
+                    <hr class="w-75">
+                </div>
+                <div class="d-flex justify-content-center">
+                    {% include 'form/_comment.html.twig' %}
+                </div>
+
+                <div class="justify-content-center d-flex">
+                    <hr class="w-75">
+                </div>
+
+                <div class="d-flex justify-content-center mb-4">
+                    {% include 'trick/_comments.html.twig' %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

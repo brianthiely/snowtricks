@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <main>
+        <section>
+            <div id="cover" class="text-white text-center px-3 d-flex flex-column">
+                <h1> <span class="brand">Snowtricks</span>, la communauté des riders.</h1>
+                <p class="lead text-center">Rejoignez la communauté Snowtricks pour partager et découvrir de nouveaux
+                    tricks de snowboard avec d'autres passionnés</p>
+                <div class="icon-container position-absolute mx-4" style="bottom:10px; right:10px;">
+                    <a class="btn btn-link btn-circle" role="button" href="#tricks"><i class="text-dark fa
+                    fa-angle-double-down
+                    fa-2x"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="tricks">
+            <div class="album py-5 bg-light">
+                <div class="d-flex justify-content-end mx-5">
+                    <a href="{{ path('trick-create') }}" class="btn btn-primary">Ajouter un trick</a>
+                </div>
+                <div id="tricks-container" class="col d-flex flex-wrap justify-content-evenly tricks">
+                    {% for trick in tricks %}
+                        <div id="cardAnime" class="card col-sm-6 col-md-2 col-lg-3 m-1 mt-4">
+                            <a href="{{ path('trick-show', {
+                                'trick_category': trick.category,
+                                'slug': trick.slug }) }}"
+                               class="h-75 object-fit-cover img-fluid text-decoration-none degrade">
+                                <img src="{% if trick.pictures.first %}
+                                    {{ trick.pictures.first.url }}
+                                        {% else %}
+                                            {{ asset('img/trick/default.png') }}
+                                        {% endif %}" class="card-img-top border-radius h-100" alt="{{ trick.name }}">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                         <p class="card-text">{{ trick.name }}</p>
+                                        <div class="btn-group">
+                                            <a href="{{ path('trick-edit', {'id': trick.id}) }}"> <i class="fa
+                                            fa-pencil
+                                            fa-sm"></i></a>
+                                            <a href="{{ path('trick-delete', {'id': trick.id}) }}"><i class="fa
+                                            fa-trash fa-sm ms-2"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="d-flex justify-content-center mt-5">
+                    <button type="button" id="see-more" class="btn btn-primary">
+                        Voir plus
+                    </button>
+                </div>
+            </div>
+        </section>
+        <a class="btn btn-link btn-circle d-flex justify-content-end mx-4" role="button" href="#tricks"><i class="text-dark fa
+                    fa-angle-double-up
+                    fa-2x"></i>
+        </a>
+    </main>
+{% endblock %}
