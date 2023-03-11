@@ -93,5 +93,9 @@ class TrickController extends AbstractController
             throw $this->createNotFoundException('Trick not found');
         }
 
+        $em->remove($trick);
+        $em->flush();
+
+        return $this->redirectToRoute('homepage');
     }
 }

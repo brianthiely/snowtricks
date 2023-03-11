@@ -7,7 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Url;
 
 class PictureType extends AbstractType
 {
@@ -19,7 +19,11 @@ class PictureType extends AbstractType
                 'attr' => [
                     'placeholder' => 'URL de l\'image'
                 ],
-
+                'constraints' => [
+                    new Url ([
+                        'message' => 'L\'URL n\'est pas valide.'
+                    ])
+                ]
             ]);
     }
 

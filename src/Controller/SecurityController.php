@@ -48,6 +48,8 @@ class SecurityController extends AbstractController
             }
 
             $token = $tokenGenerator->generateToken();
+
+            dd($token);
             $user->setResetToken($token);
             $em->persist($user);
             $em->flush();
