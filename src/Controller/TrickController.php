@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class TrickController extends AbstractController
@@ -26,6 +27,7 @@ class TrickController extends AbstractController
         return $this->render('trick/show.html.twig', compact('slug', 'trick'));
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/trick/{id}/edit', name: 'trick-edit')]
     public function edit($id, TrickRepository $trickRepository,
                          SluggerInterface $slugger ,Request
@@ -54,6 +56,7 @@ class TrickController extends AbstractController
     }
 
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/trick/create', name: 'trick-create')]
     public function create(Request $request, TrickRepository $trickRepository,
                            EntityManagerInterface $em,
@@ -68,13 +71,14 @@ class TrickController extends AbstractController
         if($form->isSubmitted() && $form->isValid()) {
 
             if($trickRepository->findOneBy(['name' => $trick->getName()])){
-                #TODO: flash message
                 $this->addFlash('danger', 'Ce trick existe déjà');
                 return $this->render('trick/create.html.twig', compact('form'));
             }
             $trick->setSlug(strtolower((string)$slugger->slug($trick->getName())));
             $em->persist($trick);
             $em->flush();
+
+            $this->addFlash('success', 'Trick créé avec succès');
 
             return $this->redirectToRoute('trick-show', ['trick_category' => $trick->getCategory()
                 ,'slug' =>
@@ -84,6 +88,7 @@ class TrickController extends AbstractController
     }
 
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/trick/{id}/delete', name: 'trick-delete')]
     public function delete($id, TrickRepository $trickRepository, EntityManagerInterface $em): Response
     {

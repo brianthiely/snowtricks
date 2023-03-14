@@ -21,6 +21,16 @@
     {% include "shared/_modale.html.twig" %}
     <body>
     {% include "shared/_navbar.html.twig" %}
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="container text-center fw-bold alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+
         {% if app.user and app.user.valid == false %}
             <div class="container alert alert-danger alert-dismissible text-center" role="alert">
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
