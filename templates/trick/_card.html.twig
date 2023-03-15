@@ -38,3 +38,27 @@
 <div class="card-body col-9 m-auto mt-4 mb-4">
     <p class="card-text">{{ trick.description }}</p>
 </div>
+
+<p class="card-text mx-auto text-center">
+<div class="border p-3 d-flex justify-content-evenly">
+    <div class="d-flex align-items-center">
+        <span class="text-muted me-2">Créé le</span>
+        <span>{{ trick.createdAt|date('d/m/Y') }}</span>
+    </div>
+
+    {% if trick.updatedAt != trick.createdAt %}
+        <div class="d-flex align-items-center">
+            <span class="text-muted me-2">Modifié le</span>
+            <span>{{ trick.updatedAt|date('d/m/Y') }}</span>
+        </div>
+    {% endif %}
+
+    <div class="d-flex align-items-center">
+        <span class="text-muted me-2">Catégorie :</span>
+        <span>{{ trick.category }}</span>
+    </div>
+</div>
+
+</p>
+
+
