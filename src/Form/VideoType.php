@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class VideoType extends AbstractType
 {
@@ -17,6 +18,12 @@ class VideoType extends AbstractType
                 'label' => 'Code d\'intégration',
                 'attr' => [
                     'placeholder' => 'Code d\'intégration de la vidéo'
+                ],
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^<iframe.*<\/iframe>$/',
+                        'message' => 'Le champ ne peut contenir que des balises iframe.'
+                    ])
                 ]
             ]);
     }

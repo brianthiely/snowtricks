@@ -8,7 +8,7 @@
                     tricks de snowboard avec d'autres passionnés</p>
                 <div class="icon-container position-absolute mx-4" style="bottom:10px; right:10px;">
                     <a class="btn btn-link btn-circle" role="button" href="#tricks"><i class="text-dark fa
-                    fa-angle-double-down
+                    fa-arrow-down
                     fa-2x"></i>
                     </a>
                 </div>
@@ -17,47 +17,54 @@
 
         <section id="tricks">
             <div class="album py-5 bg-light">
-                <div class="d-flex justify-content-end mx-5">
-                    <a href="{{ path('trick-create') }}" class="btn btn-primary">Ajouter un trick</a>
-                </div>
+                {% if app.user %}
+                    <div class="d-flex justify-content-end mx-5">
+                        <a href="{{ path('trick-create') }}" class="btn btn-primary">Ajouter un trick</a>
+                    </div>
+                {% endif %}
                 <div id="tricks-container" class="col d-flex flex-wrap justify-content-evenly tricks">
                     {% for trick in tricks %}
                         <div id="cardAnime" class="card col-sm-6 col-md-2 col-lg-3 m-1 mt-4">
                             <a href="{{ path('trick-show', {
                                 'trick_category': trick.category,
                                 'slug': trick.slug }) }}"
-                               class="h-75 object-fit-cover img-fluid text-decoration-none degrade">
+                               class="h-70 object-fit-cover img-fluid text-decoration-none degrade">
                                 <img src="{% if trick.pictures.first %}
                                     {{ trick.pictures.first.url }}
                                         {% else %}
-                                            {{ "https://i.pinimg.com/564x/ca/bf/ae/cabfae4ecadb566a850c49fc33fade69.jpg" }}
-                                        {% endif %}" class="card-img-top border-radius h-100" alt="{{ trick.name }}">
+                                            {{ asset('img/trick/default.png') }}
+                                        {% endif %}" class="card-img-top border-radius " alt="{{ trick.name }}">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                         <p class="card-text m-0">{{ trick.name }}</p>
-                                        <div class="btn-group">
-                                            <a href="{{ path('trick-edit', {'id': trick.id}) }}"> <i class="fa
-                                            fa-pencil
-                                            fa-sm"></i></a>
-                                            <a href="#"><i class="fa fa-trash fa-sm ms-2"></i></a>
+                                    {% if app.user %}
+                                        <div class="d-flex justify-content-between">
+                                            <p class="card-text">{{ trick.name }}</p>
+                                            <div class="btn-group">
+                                                <a href="{{ path('trick-edit', {'id': trick.id}) }}"> <i class="fa fa-pencil fa-sm"></i></a>
+                                                <a href="#" class="delete-button" data-trick-id="{{ trick.id }}"><i class="fa fa-trash fa-sm ms-2"></i></a>
+                                            </div>
                                         </div>
-                                    </div>
+                                    {% else %}
+                                        <p class="card-text">{{ trick.name }}</p>
+                                    {% endif %}
                                 </div>
                             </a>
                         </div>
                     {% endfor %}
-
                 </div>
-                <div class="d-flex justify-content-center mt-5">
-                    <button type="button" id="see-more" class="btn btn-primary">
-                        Voir plus
-                    </button>
-                </div>
+                {% if tricks|length > 0 %}
+                    <div class="d-flex justify-content-center mt-5">
+                        <button type="button" id="see-more" class="btn btn-primary">
+                            Voir plus
+                        </button>
+                    </div>
+                {% endif %}
             </div>
         </section>
-        <a class="btn btn-link btn-circle d-flex justify-content-end mx-4" role="button" href="#tricks"><i class="text-dark fa
-                    fa-angle-double-up
-                    fa-2x"></i>
-        </a>
+        {% if tricks|length > 15 %}
+            <a class="btn btn-link btn-circle d-flex justify-content-end mx-4" role="button" href="#tricks"><i class="text-dark fa
+                        fa-arrow-up
+                        fa-2x"></i>
+            </a>
+        {% endif %}
     </main>
 {% endblock %}

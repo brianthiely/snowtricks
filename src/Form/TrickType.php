@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Form;
 
@@ -31,18 +32,18 @@ class TrickType extends AbstractType
             ->add('pictures', CollectionType::class, [
                 'entry_type' => PictureType::class,
                 'label' => false,
+                'required' => false,
                 'by_reference' => false,
                 'allow_add' => true,
                 'allow_delete' => true,
-                'error_bubbling' => false,
             ])
             ->add('videos', CollectionType::class, [
                 'entry_type' => VideoType::class,
                 'label' => false,
+                'required' => false,
                 'by_reference' => false,
                 'allow_add' => true,
                 'allow_delete' => true,
-                'error_bubbling' => false,
             ])
             ->add('category', ChoiceType::class, [
                 'label' => 'Catégorie',

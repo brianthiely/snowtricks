@@ -7,5 +7,5 @@ import './bootstrap';
 
 
 import './js/collectionHolder.js';
-import './js/loadMore.js';
+import './js/delete-confirm-modal.js';
 

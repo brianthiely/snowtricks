@@ -23,3 +23,10 @@
   -webkit-text-fill-color: transparent;
   font-weight: bold;
 }
+
+.nav-item:not(:last-child) .nav-link::after {
+  content: " |";
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #6c757d;
+}

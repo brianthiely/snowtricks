@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Snowtrick | Communauté francophone de riders{% endblock %}</title>
         <script src="https://kit.fontawesome.com/88dd335354.js" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -17,9 +18,28 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
+    {% include "shared/_modale.html.twig" %}
     <body>
     {% include "shared/_navbar.html.twig" %}
 
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="container text-center fw-bold alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+
+        {% if app.user and app.user.valid == false %}
+            <div class="container alert alert-danger alert-dismissible text-center" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-message">
+                    <i class="fas fa-exclamation-triangle"></i> <strong> Votre compte n'est pas encore actif !
+                    </strong><a href="{{ path('app_registration_resend') }}">Renvoyer le lien d'activation</a>.
+                </div>
+            </div>
+        {% endif %}
         {% block body %}{% endblock %}
     {% include "shared/_footer.html.twig" %}
     </body>

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -8,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -19,13 +20,18 @@ class Trick
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, unique: true)]
+    #[Assert\Length(min: 3, max: 50, minMessage: 'Le nom du trick doit faire au moins 3 caractères', maxMessage: 'Le nom du trick doit faire au plus 50 caractères')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(min: 100, minMessage: 'La description du trick doit faire au moins 100 caractères')]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Choice(choices: ['grabs', 'rotations', 'flips', 'slides',
+        'one-foot-tricks', 'old-school', 'jibbing', 'freestyle', 'other'],
+        message: 'La catégorie choisie n\'est pas valide')]
     private ?string $category = null;
 
     #[ORM\Column]
@@ -42,8 +48,9 @@ class Trick
         Video::class, cascade: ['persist', 'remove' ])]
     private Collection $videos;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
+
 
     public function __construct()
     {
