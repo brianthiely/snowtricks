@@ -14,7 +14,8 @@ class HomepageController extends AbstractController
     public function index(TrickRepository $trickRepository):
     Response
     {
-        $tricks = $trickRepository->findLatest(25);
+        $tricks = $trickRepository->findLatest(15);
         return $this->render('homepage/index.html.twig', compact('tricks', ));
     }
+
 }

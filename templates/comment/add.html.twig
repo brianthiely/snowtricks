@@ -1,0 +1,14 @@
+{% if is_granted('ROLE_USER') %}
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    <div class="form-floating mb-3">
+        {{ form_row(form.content) }}
+    </div>
+    <button class="btn btn-primary">
+    <span class="me-2">
+        <i class="fas fa-paper-plane"></i>
+      </span>
+    <span class="fw-bold">Envoyer</span>
+    </button>
+    {{ form_end(form) }}
+{% endif %}

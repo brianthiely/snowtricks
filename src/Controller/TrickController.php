@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Trick;
+use App\Form\CommentType;
 use App\Form\TrickType;
+use App\Repository\CommentRepository;
 use App\Repository\TrickRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,14 +20,22 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class TrickController extends AbstractController
 {
     #[Route('/category/{trick_category}/{slug}', name: 'trick-show')]
-    public function show($slug, TrickRepository $trickRepository): Response
+    public function show($slug, TrickRepository $trickRepository, CommentRepository $commentRepository, Request $request, EntityManagerInterface $em, CommentController $commentController): Response
     {
         $trick = $trickRepository->findOneBy(['slug' => $slug]);
 
-        if(!$trick){
+        if (!$trick) {
             throw $this->createNotFoundException('Trick not found');
         }
-        return $this->render('trick/show.html.twig', compact('slug', 'trick'));
+
+        $comments = $commentRepository->findBy(['trick' => $trick], ['created_at' => 'DESC']);
+
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $commentController->addComment($request, $trick, $em);
+
+
+        return $this->render('trick/show.html.twig', compact('trick', 'comments', 'form'));
     }
 
     #[IsGranted('ROLE_USER')]

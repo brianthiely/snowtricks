@@ -9,3 +9,4 @@ import './bootstrap';
 import './js/collectionHolder.js';
 import './js/delete-confirm-modal.js';
 import './js/media-toggle.js';
+import './js/more-tricks.js';

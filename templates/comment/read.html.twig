@@ -1,0 +1,22 @@
+{% if is_granted('ROLE_USER') %}
+    {% for comment in comments %}
+        <div class="card mb-4">
+            <div class="card-header">
+                {{ comment.user.username }}
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    {{ comment.content }}
+                </p>
+                <footer class="blockquote-footer">
+{#                    <cite title="Source Title"> {{ comment.created_at }} </cite>#}
+                </footer>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-info text-center">
+        <p>Vous devez être connecté pour accéder à cette section.</p>
+        <a href="{{ path('app_login') }}">Me connecter</a>
+    </div>
+{% endif %}

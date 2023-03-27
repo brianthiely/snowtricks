@@ -23,41 +23,15 @@
                     </div>
                 {% endif %}
                 <div id="tricks-container" class="col d-flex flex-wrap justify-content-evenly tricks">
-                    {% for trick in tricks %}
-                        <div id="cardAnime" class="card col-sm-6 col-md-2 col-lg-3 m-1 mt-4">
-                            <a href="{{ path('trick-show', {
-                                'trick_category': trick.category,
-                                'slug': trick.slug }) }}"
-                               class="text-decoration-none degrade">
-                                <img src="{% if trick.pictures.first %}
-                                    {{ trick.pictures.first.url }}
-                                        {% else %}
-                                            {{ asset('img/trick/default.png') }}
-                                        {% endif %}" class="card-img-top border-radius" alt="{{ trick.name }}">
-                                <div class="card-body">
-                                    {% if app.user %}
-                                        <div class="d-flex justify-content-between">
-                                            <h5 class="card-text">{{ trick.name }}</h5>
-                                            <div class="btn-group">
-                                                <a href="{{ path('trick-edit', {'id': trick.id}) }}"> <i class="fa fa-pencil fa-sm"></i></a>
-                                                <a href="#" class="delete-button" data-trick-id="{{ trick.id }}"><i class="fa fa-trash fa-sm ms-2"></i></a>
-                                            </div>
-                                        </div>
-                                    {% else %}
-                                        <h5 class="card-text">{{ trick.name }}</h5>
-                                    {% endif %}
-                                </div>
-                            </a>
-                        </div>
-                    {% endfor %}
+                    {% include 'trick/_trick_cards.html.twig' %}
                 </div>
-                {% if tricks|length > 0 %}
+
                     <div class="d-flex justify-content-center mt-5">
                         <button type="button" id="see-more" class="btn btn-primary">
                             Voir plus
                         </button>
                     </div>
-                {% endif %}
+
             </div>
         </section>
         {% if tricks|length > 15 %}
@@ -68,3 +42,4 @@
         {% endif %}
     </main>
 {% endblock %}
+
