@@ -18,7 +18,9 @@ class HomepageController extends AbstractController
     Response
     {
         $tricks = $trickRepository->findLatest();
-        return $this->render('homepage/index.html.twig', compact('tricks', ));
+        $totalTricksCount = $trickRepository->count([]);
+
+        return $this->render('homepage/index.html.twig', compact('tricks', 'totalTricksCount' ));
     }
 
     #[Route('/homepage/load-more/{displayedTricksCount}', name: 'homepage_load_more')]
@@ -31,6 +33,14 @@ class HomepageController extends AbstractController
         $trickCards=  $this->renderView('trick/_trick_card.html.twig', ['tricks' => $tricks]);
 
         return new Response($trickCards);
+    }
+
+    #[Route('/homepage/total-tricks', name: 'homepage_total_tricks')]
+    public function totalTricks(TrickRepository $trickRepository): JsonResponse
+    {
+        $total = $trickRepository->count([]);
+
+        return $this->json(['total' => $total]);
     }
 
 }
