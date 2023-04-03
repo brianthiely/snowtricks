@@ -25,6 +25,10 @@ class RegistrationController extends AbstractController
     $passwordHasher, EntityManagerInterface $em, UserRepository
     $userRepository, SendMailService $mailService, JWTService $JWTService): Response
     {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('homepage');
+        }
+
         $user = new User();
 
         $form = $this->createForm(RegistrationType::class, $user);

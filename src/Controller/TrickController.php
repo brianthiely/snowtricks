@@ -28,7 +28,7 @@ class TrickController extends AbstractController
             throw $this->createNotFoundException('Trick not found');
         }
 
-        $comments = $commentRepository->findBy(['trick' => $trick], ['created_at' => 'DESC']);
+        $comments = $trick->getComments();
 
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);

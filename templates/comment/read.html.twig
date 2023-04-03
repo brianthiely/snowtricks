@@ -1,15 +1,13 @@
 {% if is_granted('ROLE_USER') %}
     {% for comment in comments %}
         <div class="card mb-4">
-            <div class="card-header">
-                {{ comment.user.username }}
-            </div>
             <div class="card-body">
                 <p class="card-text">
                     {{ comment.content }}
                 </p>
                 <footer class="blockquote-footer">
-{#                    <cite title="Source Title"> {{ comment.created_at }} </cite>#}
+                    <cite title="Source Title">Par {{ comment.user.username }}
+                        {{ comment.CreatedAt('dd-mm-yy') }} </cite>
                 </footer>
             </div>
         </div>

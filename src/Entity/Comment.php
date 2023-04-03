@@ -47,10 +47,26 @@ class Comment
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?string
     {
-        return $this->created_at;
+        $now = new \DateTimeImmutable();
+        $diff = $this->created_at->diff($now);
+
+        if ($diff->y > 0) {
+            return sprintf('il y a %d ans', $diff->y);
+        } elseif ($diff->m > 0) {
+            return sprintf('il y a %d mois', $diff->m);
+        } elseif ($diff->d > 0) {
+            return sprintf('il y a %d jours', $diff->d);
+        } elseif ($diff->h > 0) {
+            return sprintf('il y a %d heures', $diff->h);
+        } elseif ($diff->i > 0) {
+            return sprintf('il y a %d minutes', $diff->i);
+        } else {
+            return sprintf('il y a %d secondes', $diff->s);
+        }
     }
+
 
     #[ORM\PrePersist]
     public function setCreatedAt(): void

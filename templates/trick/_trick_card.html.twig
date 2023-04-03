@@ -1,5 +1,5 @@
 {% for trick in tricks %}
-    <div id="cardAnime" class="card col-sm-6 col-md-2 col-lg-3 m-1 mt-4" data-trick-id="{{ trick.id }}">
+    <div id="cardAnime" class="card col-sm-6 col-md-2 col-lg-3 m-1 mt-4 trick-card" data-trick-id="{{ trick.id }}">
         <a href="{{ path('trick-show', {
             'trick_category': trick.category,
             'slug': trick.slug }) }}"

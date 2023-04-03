@@ -1,9 +1,23 @@
-$(document).ready(function() {
-    const seeMoreButton = $('#see-more');
-    if (seeMoreButton.length) {
-        console.log('ok');
-        seeMoreButton.on('click', function(){
-            console.log('bonjour');
-        });
-    }
-});
+const seeMoreButton = document.getElementById('see-more');
+
+if (seeMoreButton) {
+    seeMoreButton.addEventListener('click', function() {
+        const displayedTricksCount = document.querySelectorAll('.trick-card').length;
+
+        fetch(`/homepage/load-more/${displayedTricksCount}`)
+            .then (response => response.text())
+            .then(html => {
+                console.log(html);
+                const tricksContainer = document.getElementById('tricks-container')
+
+                tricksContainer.insertAdjacentHTML('beforeend', html);
+
+
+            })
+            .catch(error => {
+                console.error('Erreur de chargement des tricks supplémentaires', error);
+            });
+
+    });
+}
+
