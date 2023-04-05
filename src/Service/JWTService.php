@@ -53,7 +53,7 @@ class JWTService
 
     /**
      * Récupère le header d'un token JWT
-     *
+     *w
      * @param string $token
      * @return array
      */

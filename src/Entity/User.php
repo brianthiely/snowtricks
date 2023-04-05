@@ -3,7 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -22,7 +26,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = ['ROLE_USER'];
 
     /**
-     * @var string The hashed password
+     * @var ?string The hashed password
      */
     #[ORM\Column]
     private ?string $password = null;
@@ -33,24 +37,55 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $valid = false;
 
-    #[ORM\Column(length: 255)]
-    private string $resetToken;
+    #[ORM\Column(nullable: true)]
+    private ?string $token = null;
 
-    /**
-     * @return ?string
-     */
-    public function getResetToken(): ?string
+    #[ORM\Column(nullable: true)]
+    private ?DateTime $tokenExpiresAt = null;
+
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class)]
+    private Collection $comments;
+
+    public function __construct()
     {
-        return $this->resetToken;
+        $this->comments = new ArrayCollection();
     }
 
     /**
-     * @param string $resetToken
+     * @return DateTime|null
      */
-    public function setResetToken(string $resetToken): void
+    public function getTokenExpiresAt(): ?DateTime
     {
-        $this->resetToken = $resetToken;
+        return $this->tokenExpiresAt;
     }
+
+    public function setTokenExpiresAt(?DateTime $tokenExpiresAt): self
+    {
+        $this->tokenExpiresAt = $tokenExpiresAt;
+
+        return $this;
+    }
+
+
+
+    /**
+     * @return string|null
+     */
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+
+
 
     public function getId(): ?int
     {
@@ -139,6 +174,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setValid(bool $valid): self
     {
         $this->valid = $valid;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
+        }
 
         return $this;
     }

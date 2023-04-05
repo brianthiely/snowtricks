@@ -20,11 +20,21 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     #[Route('/login', name: 'app_login')]
-    public function index(AuthenticationUtils $authenticationUtils): Response
+    public function index(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('homepage');
+        }
+
          $error = $authenticationUtils->getLastAuthenticationError();
 
          $lastUsername = $authenticationUtils->getLastUsername();
+
+        $session = $request->getSession();
+        $referer = $request->headers->get('referer');
+        if ($referer) {
+            $session->set('_security.main.target_path', $referer);
+        }
 
           return $this->render('security/login.html.twig', compact('lastUsername', 'error'));
     }

@@ -1,0 +1,27 @@
+{% for trick in tricks %}
+    <div id="cardAnime" class="card col-sm-6 col-md-2 col-lg-3 m-1 mt-4 trick-card" data-trick-id="{{ trick.id }}">
+        <a href="{{ path('trick-show', {
+            'trick_category': trick.category,
+            'slug': trick.slug }) }}"
+           class="text-decoration-none degrade">
+            <img src="{% if trick.pictures.first %}
+                {{ trick.pictures.first.url }}
+                    {% else %}
+                        {{ asset('img/trick/default.png') }}
+                    {% endif %}" class="card-img-top border-radius" alt="{{ trick.name }}">
+            <div class="card-body">
+                {% if app.user %}
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-text">{{ trick.name }}</h5>
+                        <div class="btn-group">
+                            <a href="{{ path('trick-edit', {'id': trick.id}) }}"> <i class="fa fa-pencil fa-sm"></i></a>
+                            <a href="#" class="delete-button" data-trick-id="{{ trick.id }}"><i class="fa fa-trash fa-sm ms-2"></i></a>
+                        </div>
+                    </div>
+                {% else %}
+                    <h5 class="card-text">{{ trick.name }}</h5>
+                {% endif %}
+            </div>
+        </a>
+    </div>
+{% endfor %}
