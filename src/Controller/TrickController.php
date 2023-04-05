@@ -20,7 +20,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class TrickController extends AbstractController
 {
     #[Route('/category/{trick_category}/{slug}', name: 'trick-show')]
-    public function show($slug, TrickRepository $trickRepository, CommentRepository $commentRepository, Request $request, EntityManagerInterface $em, CommentController $commentController): Response
+    public function show($slug, TrickRepository $trickRepository): Response
     {
         $trick = $trickRepository->findOneBy(['slug' => $slug]);
 
@@ -31,9 +31,10 @@ class TrickController extends AbstractController
         $comments = $trick->getComments();
 
         $comment = new Comment();
-        $form = $this->createForm(CommentType::class, $comment);
-        $commentController->addComment($request, $trick, $em);
-
+        $form = $this->createForm(CommentType::class, $comment, [
+        'action' => $this->generateUrl('comment-add', ['trickId' => $trick->getId()]),
+        'method' => 'POST',
+        ]);
 
         return $this->render('trick/show.html.twig', compact('trick', 'comments', 'form'));
     }
