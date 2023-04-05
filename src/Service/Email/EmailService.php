@@ -35,4 +35,23 @@ class EmailService
 
         $this->mailer->send($email);
     }
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function sendPasswordResetEmail(User $user, string $resetPasswordUrl): void
+    {
+        $email = (new TemplatedEmail())
+            ->from($this->senderEmail)
+            ->to($user->getEmail())
+            ->subject('Reset your password')
+            ->htmlTemplate('email/password_reset.html.twig')
+            ->context([
+                'resetPasswordUrl' => $resetPasswordUrl,
+                'user' => $user,
+            ]);
+
+        $this->mailer->send($email);
+    }
+
 }

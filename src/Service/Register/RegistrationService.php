@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class RegistrationService
 {
@@ -16,13 +17,16 @@ class RegistrationService
     private EntityManagerInterface $em;
     private UserPasswordHasherInterface $passwordHasher;
     private VerificationService $verificationService;
+    private TokenGeneratorInterface $tokenGenerator;
 
-    public function __construct(UserRepository $userRepository, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher, VerificationService $verificationService)
+    public function __construct(UserRepository $userRepository, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher, VerificationService $verificationService, TokenGeneratorInterface $tokenGenerator)
     {
         $this->userRepository = $userRepository;
         $this->em = $em;
         $this->passwordHasher = $passwordHasher;
         $this->verificationService = $verificationService;
+        $this->tokenGenerator = $tokenGenerator;
+
     }
 
     public function checkExistingUser(User $user): bool
@@ -36,9 +40,10 @@ class RegistrationService
      */
     public function registerUser(User $user): void
     {
+        $token = $this->tokenGenerator->generateToken();
         $hashedPassword = $this->passwordHasher->hashPassword($user, $user->getPassword());
         $user->setPassword($hashedPassword);
-        $user->setToken(bin2hex(random_bytes(32)));
+        $user->setToken($token);
         $user->setTokenExpiresAt(new \DateTime('+24 hours'));
 
         $this->em->persist($user);
