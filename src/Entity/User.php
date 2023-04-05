@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -24,7 +26,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = ['ROLE_USER'];
 
     /**
-     * @var string The hashed password
+     * @var ?string The hashed password
      */
     #[ORM\Column]
     private ?string $password = null;
@@ -35,8 +37,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $valid = false;
 
-    #[ORM\Column(length: 255)]
-    private string $resetToken;
+    #[ORM\Column(nullable: true)]
+    private ?string $token = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?DateTime $tokenExpiresAt = null;
+
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class)]
     private Collection $comments;
@@ -47,20 +53,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return ?string
+     * @return DateTime|null
      */
-    public function getResetToken(): ?string
+    public function getTokenExpiresAt(): ?DateTime
     {
-        return $this->resetToken;
+        return $this->tokenExpiresAt;
     }
 
-    /**
-     * @param string $resetToken
-     */
-    public function setResetToken(string $resetToken): void
+    public function setTokenExpiresAt(?DateTime $tokenExpiresAt): self
     {
-        $this->resetToken = $resetToken;
+        $this->tokenExpiresAt = $tokenExpiresAt;
+
+        return $this;
     }
+
+
+
+    /**
+     * @return string|null
+     */
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+
+
 
     public function getId(): ?int
     {
