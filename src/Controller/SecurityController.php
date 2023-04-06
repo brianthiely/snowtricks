@@ -36,11 +36,6 @@ class SecurityController extends AbstractController
 
          $lastUsername = $authenticationUtils->getLastUsername();
 
-        $session = $request->getSession();
-        $referer = $request->headers->get('referer');
-        if ($referer) {
-            $session->set('_security.main.target_path', $referer);
-        }
 
           return $this->render('security/login.html.twig', compact('lastUsername', 'error'));
     }
@@ -88,11 +83,6 @@ class SecurityController extends AbstractController
     public function resetPassword(string $token, UserRepository $userRepository, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher):Response
     {
         $user = $userRepository->findOneBy(['token' => $token]);
-
-        if(!$user) {
-            $this->addFlash('danger', 'Une erreur est survenue, veuillez réessayer');
-            return $this->redirectToRoute('app_login');
-        }
 
         $form = $this->createForm(ResetPasswordType::class);
 
