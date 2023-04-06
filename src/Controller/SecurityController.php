@@ -2,10 +2,11 @@
 declare(strict_types=1);
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\ResetPasswordRequestType;
 use App\Form\ResetPasswordType;
 use App\Repository\UserRepository;
-use App\Service\SendMailService;
+use App\Service\Security\PasswordResetService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,12 +14,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     #[Route('/login', name: 'app_login')]
     public function index(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
@@ -39,56 +45,49 @@ class SecurityController extends AbstractController
           return $this->render('security/login.html.twig', compact('lastUsername', 'error'));
     }
 
+
     /**
      * @throws TransportExceptionInterface
      */
-    #[Route('/forgotten-password', name: 'app_forgotten_password')]
-    public function forgottenPassword(Request $request, UserRepository $userRepository,TokenGeneratorInterface $tokenGenerator, EntityManagerInterface $em, SendMailService $mailService):Response
+    #[Route('/forgot-password', name: 'app_forgot_password')]
+    public function sendPasswordResetEmail(Request $request,PasswordResetService $passwordResetService):Response
     {
-        $form = $this->createForm(ResetPasswordRequestType::class);
+       $form = $this->createForm(ResetPasswordRequestType::class);
 
-        $form->handleRequest($request);
+         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
-            $user = $userRepository->findOneBy(['email' => $form->get('email')->getData()]);
+            if($form->isSubmitted() && $form->isValid()) {
+                $email = $form->get('email')->getData();
 
-            if(!$user) {
-                $this->addFlash('danger', 'Une erreur est survenue, veuillez réessayer');
+                $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+                if (!$user) {
+                    $this->addFlash('danger', 'No user found for email '.$email);
+                    return $this->redirectToRoute('app_forgot_password');
+                }
+
+                $token = $passwordResetService->generateToken($email);
+
+                if (!$token) {
+                    $this->addFlash('danger', 'An error occurred, please try again');
+                    return $this->redirectToRoute('app_login');
+                }
+
+                $passwordResetService->sendPasswordResetEmail($user, $token);
+
+                $this->addFlash('success', 'An email has been sent to your address');
+
                 return $this->redirectToRoute('app_login');
             }
-
-            $token = $tokenGenerator->generateToken();
-
-            $user->setResetToken($token);
-            $em->persist($user);
-            $em->flush();
-
-
-            $url = $this->generateUrl('app_reset_password', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
-
-            $context = compact('user', 'url');
-            $mailService->send(
-                'no-reply@snowtrick.com',
-                $user->getEmail(),
-                'Réinitialisation de votre mot de passe',
-                'password_reset',
-                $context
-            );
-
-            $this->addFlash('success', 'Un email de réinitialisation de mot de passe vous a été envoyé');
-
-            return $this->redirectToRoute('app_login');
-        }
-
-        $form->createView();
-        return $this->render('security/reset_password_request.html.twig', compact('form'));
+            $form->createView();
+            return $this->render('security/reset_password_request.html.twig', compact('form'));
     }
 
 
     #[Route('/reset-password/{token}', name: 'app_reset_password')]
     public function resetPassword(string $token, UserRepository $userRepository, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher):Response
     {
-        $user = $userRepository->findOneBy(['resetToken' => $token]);
+        $user = $userRepository->findOneBy(['token' => $token]);
 
         if(!$user) {
             $this->addFlash('danger', 'Une erreur est survenue, veuillez réessayer');
@@ -100,7 +99,8 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
-            $user->setResetToken('');
+            $user->setToken(null);
+            $user->setTokenExpiresAt(null);
             $user->setPassword($hasher->hashPassword($user, $form->get('password')->getData()));
             $em->persist($user);
             $em->flush();

@@ -19,7 +19,6 @@ class CommentType extends AbstractType
                     'rows' => 3,
                     'class' => 'form-control'
                 ],
-                'required' => true,
             ])
         ;
     }

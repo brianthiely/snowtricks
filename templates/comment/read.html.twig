@@ -1,4 +1,4 @@
-{% if is_granted('ROLE_USER') %}
+{% if app.user %}
     {% for comment in comments %}
         <div class="card mb-4">
             <div class="card-body">

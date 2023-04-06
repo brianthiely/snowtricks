@@ -5,9 +5,7 @@ namespace App\Service\Verification;
 use App\Entity\User;
 use App\Service\Email\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class VerificationService
@@ -67,5 +65,4 @@ class VerificationService
 
         $this->emailService->sendVerificationEmail($user, $verificationUrl);
     }
-
 }
