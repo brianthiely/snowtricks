@@ -4,6 +4,7 @@ Ce projet est un site communautaire pour les passionnés de snowboard. Il permet
 - Importez la base de données située à la racine du projet.
 - Faites un ```npm install``` pour installer les dépendances JavaScript.
 - Faites un ```composer install``` pour installer les dépendances PHP.
+- ```npm run build```
 - Dans le fichier .env, modifiez l'accès à la base de données avec vos propres identifiants.
 
 ## Fonctionnalités
